@@ -1,0 +1,7 @@
+station_id,station_naam,regio,dagelijkse_reizigers,knooppunt
+UT,Utrecht Centraal,Randstad,210000,True
+ASD,Amsterdam Centraal,Randstad,192000,True
+RDM,Rotterdam Centraal,Randstad,180000,True
+AMF,Amersfoort,Midden,52000,False
+EHV,Eindhoven,Zuid,75000,False
+GVC,Den Haag Centraal,Randstad,140000,True

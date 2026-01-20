@@ -1,0 +1,4 @@
+kpi_id,kpi_naam,doelwaarde,eenheid,toepassing
+KPI01,Zitplaatskans,95,% reizigers met zitplaats,Spits
+KPI02,Maximale overbezetting,5,% ritten boven capaciteit,Landelijk
+KPI03,Juiste materieelinzet,98,% correct gepland,Operatie
