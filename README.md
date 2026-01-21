@@ -6,7 +6,8 @@ Deze analyse geeft inzicht in de **zitplaatskans voor reizigers** en de mate van
 ---
 
 ### Belangrijkste bevindingen
-- De **zitplaatskans is structureel lager tijdens de spits**, met name in de avondspits.
+![Gemiddelde zitplaatskans](images/gem_zitplaatskand_per_vertrekuur.png)
+- De **zitplaatskans is structureel lager tijdens de spits**.
 - Een beperkt aantal **trajecten en tijdvakken** is verantwoordelijk voor een groot deel van de overbezetting.
 - Sommige **materieeltypes** laten consistent hogere bezettingsgraden en een lagere zitplaatskans zien, wat wijst op een mismatch tussen capaciteit en vraag.
 - Er zijn duidelijke **seizoenspatronen** zichtbaar, met hogere drukte in specifieke maanden.
