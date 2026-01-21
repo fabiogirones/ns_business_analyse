@@ -6,7 +6,7 @@ Deze analyse geeft inzicht in de **zitplaatskans voor reizigers** en de mate van
 ---
 
 ### Disclaimer
-De in dit document gebruikte data is door AI gegenereerde dummy data en dient uitsluitend ter illustratie. Eventuele resultaten, analyses en conclusies die hieruit worden afgeleid zijn fictief en mogen niet worden beschouwd als representatief voor de werkelijkheid. Aan de inhoud kunnen geen rechten worden ontleend en de data weerspiegelt geen echte situaties.
+De in deze repository gebruikte data is door AI gegenereerde dummy data en dient uitsluitend ter illustratie. Eventuele resultaten, analyses en conclusies die hieruit worden afgeleid zijn fictief en mogen niet worden beschouwd als representatief voor de werkelijkheid. Aan de inhoud kunnen geen rechten worden ontleend en de data weerspiegelt geen echte situaties.
 
 ---
 
