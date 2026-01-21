@@ -1,5 +1,3 @@
-setwd("C:/Users/fdgir/projects/ns-business-analyse")
-
 library("plm")
 library(lmtest)
 library(car)
@@ -18,20 +16,20 @@ library(tidyr)
 library(scales)
 
 #IMPORT DATA
-bezettingsregistraties <- read_csv("data/bezettingsregistraties.csv")
-materieelplanning <- read_csv("data/materieelplanning.csv")
-concessie_kpis <- read_csv("data/concessie_kpis.csv")
-station_metadata <- read_csv("data/station_metadata.csv")
-trein_dienstregeling <- read_csv("data/trein_dienstregeling.csv")
+bezettingsregistraties <- read_csv("C:/Users/fdgir/projects/ns_business_analyse/data/bezettingsregistraties.csv")
+materieelplanning <- read_csv("C:/Users/fdgir/projects/ns_business_analyse/data/materieelplanning.csv")
+concessie_kpis <- read_csv("C:/Users/fdgir/projects/ns_business_analyse/data/concessie_kpis.csv")
+station_metadata <- read_csv("C:/Users/fdgir/projects/ns_business_analyse/data/station_metadata.csv")
+trein_dienstregeling <- read_csv("C:/Users/fdgir/projects/ns_business_analyse/data/trein_dienstregeling.csv")
 
-# 1) Datacontrole (snelle sanity checks)
+# 1) Datacontrole
 glimpse(trein_dienstregeling)
 glimpse(bezettingsregistraties)
 glimpse(materieelplanning)
 glimpse(station_metadata)
 glimpse(concessie_kpis)
 
-# Check op duplicates op de belangrijkste keys (trein_id + dienst_datum)
+# Check duplicates
 trein_dienstregeling %>%
   count(trein_id, dienst_datum) %>%
   filter(n > 1) %>%
@@ -97,7 +95,7 @@ fact <- trein_dienstregeling2 %>%
     buffer_zitplaatsen = zitplaatsen - reizigers
   )
 
-# 4) Check op NA’s na joins (indicatie van ontbrekende koppelingen)
+# 4) Check op NA’s na joins
 colSums(is.na(fact[c("reizigers","zitplaatsen","materieeltype","vertrek_station","aankomst_station")]))
 
 # 5) KPI’s overall
@@ -119,15 +117,13 @@ kpi_tijdvak <- fact %>%
   group_by(tijdvak) %>%
   summarise(
     ritten = n(),
-    reizigers = sum(reizigers, na.rm = TRUE),
-    pct_ritten_overbezet = mean(overbezet, na.rm = TRUE) * 100,
-    zitplaatskans_reizigers_pct =
-      100 * sum(pmin(zitplaatsen, reizigers), na.rm = TRUE) /
-      sum(reizigers, na.rm = TRUE),
+    reizigers_totaal = sum(reizigers, na.rm = TRUE),
+    zitplaatsen_totaal = sum(zitplaatsen, na.rm = TRUE),
     gemiddelde_bezettingsgraad = mean(bezettingsgraad, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(reizigers))
+    pct_ritten_overbezet = mean(overbezet, na.rm = TRUE) * 100,
+    gemiddelde_overbezettingsgraad = mean(overbezettingsgraad, na.rm = TRUE),
+    zitplaatskans_reizigers_pct = weighted.mean(zitplaatskans_pct, w = reizigers, na.rm = TRUE)
+  )
 
 kpi_tijdvak
 
@@ -137,15 +133,12 @@ kpi_materieel <- fact %>%
   summarise(
     ritten = n(),
     reizigers_totaal = sum(reizigers, na.rm = TRUE),
-    pct_ritten_overbezet = mean(overbezet, na.rm = TRUE) * 100,
-    zitplaatskans_reizigers_pct =
-      100 * sum(pmin(zitplaatsen, reizigers), na.rm = TRUE) /
-      sum(reizigers, na.rm = TRUE),
+    zitplaatsen_totaal = sum(zitplaatsen, na.rm = TRUE),
     gemiddelde_bezettingsgraad = mean(bezettingsgraad, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(reizigers_totaal))
-
+    pct_ritten_overbezet = mean(overbezet, na.rm = TRUE) * 100,
+    gemiddelde_overbezettingsgraad = mean(overbezettingsgraad, na.rm = TRUE),
+    zitplaatskans_reizigers_pct = weighted.mean(zitplaatskans_pct, w = reizigers, na.rm = TRUE)
+  )
 
 kpi_materieel
 
@@ -155,11 +148,11 @@ top_knelpunten <- fact %>%
   summarise(
     ritten = n(),
     reizigers_totaal = sum(reizigers, na.rm = TRUE),
-    zitplaatskans_reizigers_pct =
-      100 * sum(pmin(zitplaatsen, reizigers), na.rm = TRUE) /
-      sum(reizigers, na.rm = TRUE),
+    zitplaatsen_totaal = sum(zitplaatsen, na.rm = TRUE),
+    gemiddelde_bezettingsgraad = mean(bezettingsgraad, na.rm = TRUE),
     pct_ritten_overbezet = mean(overbezet, na.rm = TRUE) * 100,
-    .groups = "drop"
+    gemiddelde_overbezettingsgraad = mean(overbezettingsgraad, na.rm = TRUE),
+    zitplaatskans_reizigers_pct = weighted.mean(zitplaatskans_pct, w = reizigers, na.rm = TRUE)
   ) %>%
   filter(ritten >= 30) %>% # stabiliteit
   arrange(zitplaatskans_reizigers_pct) %>%
@@ -182,7 +175,6 @@ trend_maand <- fact %>%
 trend_maand
 
 # 10) Visuals
-# 10a) Trend: Zitplaatskans per maand
 ggplot(trend_maand, aes(x = month, y = zitplaatskans_reizigers_pct)) +
   geom_line(linewidth = 1) +
   geom_point() +
@@ -193,7 +185,6 @@ ggplot(trend_maand, aes(x = month, y = zitplaatskans_reizigers_pct)) +
   ) +
   theme_minimal()
 
-# 10b) Trend: % overbezette ritten per maand
 ggplot(trend_maand, aes(x = month, y = pct_ritten_overbezet)) +
   geom_line(linewidth = 1) +
   geom_point() +
@@ -204,7 +195,38 @@ ggplot(trend_maand, aes(x = month, y = pct_ritten_overbezet)) +
   ) +
   theme_minimal()
 
-# 10c) Materieel: zitplaatskans vs % overbezet
+fact_avg <- fact %>%
+  group_by(vertrek_uur) %>%
+  summarise(
+    avg_overbezettingsgraad = mean(overbezettingsgraad, na.rm = TRUE)
+  )
+
+ggplot(fact_avg, aes(x = vertrek_uur, y = avg_overbezettingsgraad)) +
+  geom_col(fill = "steelblue") +
+  scale_y_continuous(labels = percent_format(scale = 1)) +
+  labs(
+    title = "Gemiddelde overbezettingsgraad per vertrekuur",
+    x = "Vertrektijd",
+    y = "Gemiddelde overbezettingsgraad (%)"
+  ) +
+  theme_minimal()
+
+fact_zit_avg <- fact %>%
+  group_by(vertrek_uur) %>%
+  summarise(
+    avg_zitplaatskans = mean(zitplaatskans_pct, na.rm = TRUE)
+  )
+
+ggplot(fact_zit_avg, aes(x = vertrek_uur, y = avg_zitplaatskans)) +
+  geom_col(fill = "darkgreen") +
+  scale_y_continuous(labels = percent_format(scale = 1)) +
+  labs(
+    title = "Gemiddelde zitplaatskans per vertrekuur",
+    x = "Vertrektijd",
+    y = "Gemiddelde zitplaatskans (%)"
+  ) +
+  theme_minimal()
+
 ggplot(kpi_materieel, aes(x = pct_ritten_overbezet, y = zitplaatskans_reizigers_pct, label = materieeltype)) +
   geom_point(size = 3) +
   geom_text(vjust = -0.8) +
