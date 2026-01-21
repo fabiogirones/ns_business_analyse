@@ -30,10 +30,6 @@ De in deze repository gebruikte data is door AI gegenereerde dummy data en dient
    Zet meer of langer materieel in op de geïdentificeerde knelpunten tijdens ochtend- en avondspits.
 2. **Herallocatie van materieel**  
    Verschuif hogere capaciteit naar trajecten met structureel lage zitplaatskans.
-3. **Reizigersgewogen sturing**  
-   Monitor zitplaatskans primair op **reizigersniveau** in plaats van ritniveau.
-4. **Continue KPI-monitoring**  
-   Gebruik dashboards om prestaties per traject en tijdvak te volgen en tijdig bij te sturen.
 
 ---
 
